@@ -1,9 +1,10 @@
 const { JWT_SECRET } = require("../secrets"); // use this secret!
+const jwt = require('jsonwebtoken')
 
 module.exports = user => {
     const payload = {
         subject: user.user_id,
-        user_name: user.user_name,
+        username: user.username,
         role_name: user.role_name
     }
 
@@ -11,10 +12,10 @@ module.exports = user => {
         expiresIn: '1d'
     }
 
-    const token = {
+    const token = jwt.sign(
         payload,
         JWT_SECRET,
         options
-    }
+    )
     return token
 }
