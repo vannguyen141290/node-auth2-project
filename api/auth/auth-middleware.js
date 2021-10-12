@@ -1,4 +1,6 @@
 const { JWT_SECRET } = require("../secrets"); // use this secret!
+const db = require('../../data/db-config')
+const Users = require('../users/users-model')
 
 const restricted = (req, res, next) => {
   /*
@@ -32,7 +34,7 @@ const only = role_name => (req, res, next) => {
 }
 
 
-const checkUsernameExists = (req, res, next) => {
+const checkUsernameExists = async (req, res, next) => {
   /*
     If the username in req.body does NOT exist in the database
     status 401
@@ -40,7 +42,13 @@ const checkUsernameExists = (req, res, next) => {
       "message": "Invalid credentials"
     }
   */
-
+  const { username } = req.body
+  const isExist = await Users.findBy({ username })
+  if (!isExist) {
+    next({ status: 401, message: "Invalid credentials" })
+  } else {
+    next()
+  }
 }
 
 
