@@ -18,9 +18,13 @@ function find() {
       }
     ]
    */
+  return db('users as u')
+    .leftJoin('roles as r', 'u.role_id', 'r.role_id')
+    .select('u.user_id', 'u.username', 'r.role_name')
+    .orderBy('u.user_id')
 }
 
-function findBy(filter) {
+async function findBy(filter) {
   /**
     You will need to join two tables.
     Resolves to an ARRAY with all users that match the filter condition.
@@ -34,6 +38,11 @@ function findBy(filter) {
       }
     ]
    */
+  return db('users as u')
+    .fullJoin('roles as r')
+    .select('u.user_id', 'u.username', 'u.password', 'r.role_name')
+    .where(filter)
+
 }
 
 function findById(user_id) {
@@ -47,6 +56,12 @@ function findById(user_id) {
       "role_name": "instructor"
     }
    */
+  return db('users as u')
+    .leftJoin('roles as r', 'u.role_id', 'r.role_id')
+    .select('u.user_id', 'u.username', 'r.role_name')
+    .where('u.user_id', user_id)
+    .first()
+
 }
 
 /**
@@ -55,7 +70,7 @@ function findById(user_id) {
   if the given role_name does not exist yet.
 
   When an operation like creating a user involves inserts to several tables,
-  we want the operation to succeed or fail as a whole. It would not do to
+  we want the operation to succeed or fail as a whole. It wo uld not do to
   insert a new role record and then have the insertion of the user fail.
 
   In situations like these we use transactions: if anything inside the transaction

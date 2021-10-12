@@ -25,6 +25,7 @@ router.get("/", restricted, (req, res, next) => { // done for you
     .catch(next);
 });
 
+
 /**
   [GET] /api/users/:user_id
 
@@ -47,5 +48,7 @@ router.get("/:user_id", restricted, only('admin'), (req, res, next) => { // done
     })
     .catch(next);
 });
+
+
 
 module.exports = router;
