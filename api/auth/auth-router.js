@@ -55,19 +55,24 @@ router.post("/login", checkUsernameExists, (req, res, next) => {
     }
    */
   const { username, password } = req.body
-  Users.findBy({ username })
-    .then(([user]) => {
-      if (bcrypt.compareSync(password, user.password)) {
-        const token = tokenBuilder(user)
-        res.status(200).json({
-          message: `${user.username} is back!`,
-          token
-        })
-      } else {
-        next({ status: 401, message: 'Invalid credentials' })
-      }
-    })
-    .catch(next)
+  if (password === undefined) {
+    next({ status: 401, message: 'invalid credentials' })
+  } else {
+    Users.findBy({ username })
+      .then(([user]) => {
+        if (bcrypt.compareSync(password, user.password)) {
+          const token = tokenBuilder(user)
+          res.status(200).json({
+            message: `${user.username} is back!`,
+            token
+          })
+        } else {
+          next({ status: 401, message: 'Invalid credentials' })
+        }
+      })
+      .catch(next)
+
+  }
 
 });
 
